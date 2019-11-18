@@ -1,0 +1,97 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+
+$(function() {
+	/*函数初始化加载  p的值没有影响*/
+   　　 //var p=$("#city").val();
+   var p="北京市";
+    city2  = document.getElementById("city");
+    var city=$("#prov");
+		$.post("address",{"proc":p},function(data){
+		var citylist=data.split(",");
+			 var citynum=citylist.length;
+			// console.log(p);
+           /*   city.options.length=0; */
+           var htmstr="";
+            for(i=0;i<citynum;i++)
+              /*  city.options.add(new Option(citylist[i])); */
+               htmstr+="<option>"+citylist[i]+"</option>";
+               city.html(htmstr);
+		});  //待调用的函数
+		
+	refresh();
+　　}
+);
+ function refresh(){
+ 	  //var p=$("#prov").val();
+ 	  //var p=$("#prov").val();
+ 	  //var tet = $("#prov").find("option:selected").text();
+ 	  //获取option当前显示的值。
+ 	  var p = $("#prov").find("option:selected").text();
+ 	  //console.log(tet);
+    // var city1=$("#city")[0];
+    city2  = document.getElementById("city");
+    var city=$("#city");
+      if(p==""){
+         city.options.length=0;
+         city.options.add(new Option("--请选择城市--"))
+      }
+      else{
+		$.post("SerCity",{"proc":p},function(data){
+		var citylist=data.split(",");
+			 var citynum=citylist.length;
+			 console.log(p);
+			 //console.log(tet);
+           /*   city.options.length=0; */
+           var htmstr="";
+            for(i=0;i<citynum;i++)
+              /*  根据选中的省，更新城市 */        
+               htmstr+="<option>"+citylist[i]+"</option>";
+               city.html(htmstr);
+               recity();  //更新了省，和城市自动更新县。
+		});
+      
+      }
+      
+ } 
+ function recity(){
+ 	  //var p=$("#city").val();
+ 	var p = $("#city").find("option:selected").text();
+    city2  = document.getElementById("area");
+    var city=$("#area");
+      if(p==""){
+         city.options.length=0;
+         city.options.add(new Option("--请选择区域--"))
+      }
+      else{
+		$.post("SerArea",{"proc":p},function(data){
+		var citylist=data.split(",");
+			 var citynum=citylist.length;
+			 console.log(p);
+           /*   city.options.length=0; */
+           var htmstr="";
+            for(i=0;i<citynum;i++)
+              /*  city.options.add(new Option(citylist[i])); */
+               htmstr+="<option>"+citylist[i]+"</option>";
+               city.html(htmstr);
+		});
+      }
+ } 
+</script>
+</head>
+   <body>
+       <select name="prov" id="prov" onchange="refresh();">
+        <option value="">北京市</option>
+      </select>
+      <select name="city" id="city" onchange="recity();">
+         <option>北京市</option>
+      </select>
+      <select name='area' id="area">
+		<option value="">--请选择区域--</option>
+	</select>
+   </body>
+</html>
